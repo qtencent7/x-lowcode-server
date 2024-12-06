@@ -1,4 +1,5 @@
 const connection = require('../sql');
+
 class PagesService {
   async listCount(keyword, userId, projectId) {
     let statement = '';
@@ -11,11 +12,11 @@ class PagesService {
         LEFT JOIN   
           pages_role pr 
         ON 
-          p.project_id = pr.page_id and pr.user_id = ${userId}
+          p.id = pr.page_id and pr.user_id = ${userId}
         WHERE 
           (p.name like COALESCE(CONCAT('%',?,'%'), p.name) OR ? IS NULL) 
         AND 
-          p.project_id = ${projectId} and pr.user_id IS NOT NULL`;
+          p.project_id = ${projectId} and (p.user_id = ${userId} OR pr.user_id IS NOT NULL)`;
     } else {
       statement = `
         SELECT 
@@ -63,11 +64,11 @@ class PagesService {
         LEFT JOIN   
           pages_role pr 
         ON 
-          p.project_id = pr.page_id and pr.user_id = ${userId}
+          p.id = pr.page_id and pr.user_id = ${userId}
         WHERE 
           (p.name like COALESCE(CONCAT('%',?,'%'), p.name) OR ? IS NULL) 
         AND 
-          p.project_id = ${projectId} and pr.user_id IS NOT NULL 
+          p.project_id = ${projectId} and (p.user_id = ${userId} OR pr.user_id IS NOT NULL)
         ORDER BY 
           p.updated_at DESC LIMIT ${offset},${limit};`;
     } else {
@@ -101,7 +102,7 @@ class PagesService {
         ORDER BY 
           p.updated_at DESC LIMIT ${offset},${limit};`;
     }
-    const [result] = await connection.execute(statement, [userId, keyword || null, keyword || null, userId]);
+    const [result] = await connection.execute(statement, [keyword || null, keyword || null]);
     return result;
   }
 
