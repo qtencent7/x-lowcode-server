@@ -48,7 +48,7 @@ module.exports = {
       return ctx.throw(400, '账号信息异常，请重新登录');
     }
     const { total } = await libService.listCount('', 1, userId);
-    const message = total > 2 && userId != 50 ? '您当前最多可以创建2个自定义组件' : '';
+    const message = total > 200 && userId != 50 ? '您当前最多可以创建2个自定义组件' : '';
     if (message) {
       return util.fail(ctx, message);
     }
