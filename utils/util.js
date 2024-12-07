@@ -113,42 +113,35 @@ module.exports = {
     return jwt.verify(token, config.JWT_SECRET);
   },
   /**
-   * 上传文件，用于自定义组件内容上传到bos
+   * 上传文件到本地
    * @param {*} fileName 文件名称
    * @param {*} content 文件内容
-   * @returns 上传后云地址
+   * @returns 上传后的本地文件路径
    */
   async uploadString(fileName, content) {
-    var ossConfig = {
-      credentials: {
-        ak: config.OSS_ACCESSKEY,
-        sk: config.OSS_ACCESSKEYSECRET,
-      },
-      endpoint: config.OSS_ENDPOINT,
-    };
-
-    let bucket = config.OSS_BUCKET1;
-    let object = `libs/${fileName}`;
-    let client = new sdk.BosClient(ossConfig);
-
-    let ContentType = '';
-    if (fileName.endsWith('.js')) {
-      ContentType = 'application/javascript; charset=utf-8';
-    } else if (fileName.endsWith('.html')) {
-      ContentType = 'text/html; charset=utf-8';
-    } else if (fileName.endsWith('.json')) {
-      ContentType = 'application/json; charset=utf-8';
-    } else if (fileName.endsWith('.css')) {
-      ContentType = 'text/css; charset=utf-8';
+    const fs = require('fs');
+    const path = require('path');
+    
+    // 确保 uploads 目录存在
+    const uploadsDir = path.join(__dirname, '..', 'uploads');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir);
     }
-    // 以字符串形式上传
-    return await client.putObject(bucket, object, Buffer.from(content, 'utf8'), {
-      'Content-Type': ContentType, // 添加http header
-      'Cache-Control': 'public, max-age=31536000', // 指定缓存指令
-      'x-bce-acl': 'public-read',
-    });
-  },
 
+    // 创建 libs 子目录
+    const libsDir = path.join(uploadsDir, 'libs');
+    if (!fs.existsSync(libsDir)) {
+      fs.mkdirSync(libsDir);
+    }
+
+    const filePath = path.join(libsDir, fileName);
+    
+    // 写入文件
+    await fs.promises.writeFile(filePath, content, 'utf8');
+    
+    // 返回文件的相对路径，用于访问
+    return `/uploads/libs/${fileName}`;
+  },
   /**
    * 传入文本，通过百度内容审核接口校验文本的合法性，返回校验结果
    * @param {*} content 文本内容

@@ -3,6 +3,7 @@ const { koaBody } = require('koa-body');
 const cors = require('koa2-cors');
 const koajwt = require('koa-jwt');
 const path = require('path');
+const serve = require('koa-static');
 const { routerInstaller } = require('./utils/installer');
 const errorHandler = require('./error');
 const config = require('./config');
@@ -75,10 +76,13 @@ app.use(
       /^\/api\/admin\/page\/detail/,
       /^\/api\/ai\/proxy/,
       /^\/api\/firefly/,
+      /^\/uploads\//,  // 允许访问上传的文件
     ],
   }),
 );
 
+// 静态文件服务
+app.use(serve(path.join(__dirname)));
 routerInstaller(app);
 
 app.on('error', errorHandler);

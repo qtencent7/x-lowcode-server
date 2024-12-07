@@ -128,14 +128,14 @@ module.exports = {
       const jsName = md5Encry(userId + reactCompile + Date.now()) + '.js';
       const cssName = md5Encry(userId + cssCompile + Date.now()) + '.css';
       const configName = md5Encry(userId + configCode + Date.now()) + '.js';
-      await util.uploadString(jsName, reactCompile);
-      await util.uploadString(cssName, cssCompile);
-      await util.uploadString(configName, configCode);
+      const jsUrl = await util.uploadString(jsName, reactCompile);
+      const cssUrl = await util.uploadString(cssName, cssCompile);
+      const configUrl = await util.uploadString(configName, configCode);
       await libService.updateLibPublish({
         libId,
-        reactUrl: `${config.OSS_CDNDOMAIN1}/libs/${jsName}`,
-        cssUrl: `${config.OSS_CDNDOMAIN1}/libs/${cssName}`,
-        configUrl: `${config.OSS_CDNDOMAIN1}/libs/${configName}`,
+        reactUrl: jsUrl,
+        cssUrl: cssUrl,
+        configUrl: configUrl,
         releaseHash,
       });
     } else {
@@ -143,15 +143,15 @@ module.exports = {
       const jsName = md5Encry(userId + reactCompile + Date.now()) + '.js';
       const cssName = md5Encry(userId + cssCompile + Date.now()) + '.css';
       const configName = md5Encry(userId + configCode + Date.now()) + '.js';
-      await util.uploadString(jsName, reactCompile);
-      await util.uploadString(cssName, cssCompile);
-      await util.uploadString(configName, configCode);
+      const jsUrl = await util.uploadString(jsName, reactCompile);
+      const cssUrl = await util.uploadString(cssName, cssCompile);
+      const configUrl = await util.uploadString(configName, configCode);
       await libService.publish({
         libId,
         releaseId: id,
-        reactUrl: `${config.OSS_CDNDOMAIN1}/libs/${jsName}`,
-        cssUrl: `${config.OSS_CDNDOMAIN1}/libs/${cssName}`,
-        configUrl: `${config.OSS_CDNDOMAIN1}/libs/${configName}`,
+        reactUrl: jsUrl,
+        cssUrl: cssUrl,
+        configUrl: configUrl,
         releaseHash,
         userId,
         userName,
