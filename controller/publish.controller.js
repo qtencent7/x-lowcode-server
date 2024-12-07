@@ -32,6 +32,7 @@ module.exports = {
     const { userId, userName } = util.decodeToken(ctx);
 
     const [pageInfo] = await pagesService.getPageInfoById(+pageId);
+    console.log(JSON.stringify(pageInfo), 'pageinfo')
     if (!pageInfo || !pageInfo.pageData) {
       return ctx.throw(400, '页面不存在或页面数据为空');
     }
