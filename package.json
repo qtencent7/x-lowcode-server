@@ -1,8 +1,7 @@
 {
-  "name": "marsview-server",
+  "name": "x-lowcode-server",
   "version": "1.0.0",
   "repository": "",
-  "author": "河畔一角",
   "license": "Apache-2.0",
   "scripts": {
     "dev": "nodemon main.js",
